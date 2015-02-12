@@ -1,6 +1,10 @@
 GitHub
 ------
 
+A free account was created. Accounts can be free if they are publically shared. Private accounts cost money.
+
+Any number of repositories seem to be able to be associated with the account.
+
 https://github.com/
 
 Sign in as jmc165
