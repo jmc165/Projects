@@ -1,0 +1,6 @@
+<MarketplaceDetails>
+  <SmallAppTile>StoreIcon.png</SmallAppTile>
+  <ScreenShots>1-wvga.png;2-wvga.png;3-wvga.png;4-wvga.png;5-wvga.png;6-wvga.png;7-wvga.png;8-wvga.png;</ScreenShots>
+  <ScreenShotsWXGA>1-wxga.png;2-wxga.png;3-wxga.png;4-wxga.png;5-wxga.png;6-wxga.png;7-wxga.png;8-wxga.png;</ScreenShotsWXGA>
+  <ScreenShots720P>1-720.png;2-720.png;3-720.png;4-720.png;5-720.png;6-720.png;7-720.png;8-720.png;</ScreenShots720P>
+</MarketplaceDetails>

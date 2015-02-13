@@ -1,0 +1,263 @@
+Team Foundation Server:
+
+Project is held under cloud based TFS server (jmchadbourne.visualstudio.com). This is currently free. (Password
+is Microsoft account) but may be charged for in the future.
+
+- General
+
+Icons Required
+
+StoreIcon.png 300x300 (Opaque background)
+AppligationIcon.png 100x100 (Opaque background)
+
+IconicTileSmall.png 70x110 (Opaque background) 
+IconicTileMedium.png 130x202 (Opaque background) 
+
+OR
+
+FlipCycleSmall.png 159x159 (Opaque background)
+FlipCycleSMedium.png 336x336 (Opaque background)
+FlipCycleLarge.png 691x336 (Opaque background)
+
+Icon main area created as SVG file (with opacity set). Online SVG editor svg-edit can be used this (under google)
+
+Perfec Tile for Windows 8 was purchased to generate the SVG into all the correct icons required for 
+the application.
+
+Application parameters described in the WMAppManifest (graphical editor)
+
+- Newsprint
+
+Newsprint80 uses the Windows Phone Toolkit (Nuget)
+
+and also the SOLAWP8 external DLL for SMAARTO advertising. This DLL was inserted into the project
+using the Toolbox Add Items extender. Using the control in XAML gives compile time errors about
+incompatible assemblies that bizarely run in practice, so the control was used programmatically in c#
+to get around this.
+
+- Mobile Azure Services
+
+SQL Database created under Azure Storage
+
+Database is https://q6swzcvnjq.database.windows.net
+
+To manage it, Username is SQLAdmin, Password is SQLk3yb0ar. It must be configured it edit via specific IP address via the 
+portal.
+
+Mobile service is created with a name "TVSeries". If linking to an existing database, schema name by default is dbo. This must be changed to the
+same name as the series user a SQL ALTER command to rename each table. This can be done in the Azure portal.
+
+E.g. ALTER SCHEMA TVseries TRANSFER OBJECT::dbo.TableName
+
+Even after that each table must be created as a Data item with a name corresponding to same SQL item. 
+
+Existing tables must have primary index called "id" in lower case.
+
+- TVSeries 
+
+HtmlAgility was installed in TVSeries80 using NuGet package manager. There is a slight dependency problem to it for WP8. Remove the added assembly DLL for
+HtmlAgility and add it manually from C:\TFSProjects\WP\packages\HtmlAgilityPack.1.4.6\lib\sl3-wp
+
+
+- TVDB.com
+
+Username jmchadbourne
+password Song
+API Key C4872D6A2AAE617A
+
+General Information 
+
+Any company or project must abide by the rules on our API registration form. 
+
+
+Please avoid making more API calls than are necessary to retrieve the information you need. Each series has a zipped XML file that contains all of the series and episode data for that series. If your program has the technical capability of handling these files, please make an attempt to use them since they'll be mirrored by more servers and will reduce bandwidth for both the server and clients. 
+
+For XML data, additional fields may be added at any time. Your application should be programmed in such a way that it can ignore any fields it doesn't need. 
+
+Dynamic Interfaces 
+
+This will be the locations of the PHP interfaces with parameter list and usage instructions. 
+
+GetSeries 
+
+GetSeriesByRemoteID 
+
+GetEpisodeByAirDate 
+
+GetRatingsForUser 
+
+Updates (deprecated, use Below Method) 
+
+User_PreferredLanguage 
+
+User_Favorites 
+
+User_Rating 
+
+ File Structure 
+
+This will be the format of the static interface structure and usage instructions. Note: If no <language>.xml is specified for a directory, en.xml will be returned. 
+<mirrorpath>/api/<apikey>/
+|---- mirrors.xml
+|---- languages.xml
+|
+|---- series/
+|     |---- <seriesid>/
+|           |---- <language>.xml  (Base Series Record)
+|           |---- banners.xml  (All banners related to this series)
+|           |---- actors.xml  (All actors related to this series)
+|           |
+|           |---- all/
+|           |     |---- <language>.xml  (Full Series Record)
+|           |     |---- <language>.zip  (Zipped version of Full Series Record, banners.xml and actors.xml)
+|           |
+|           |---- default/  (sorts using the default ordering method)
+|           |     |---- <season#>/<episode#>/
+|           |           |---- <language>.xml  (Base Episode Record)
+|           |
+|           |---- dvd/  (sorts using the dvd ordering method)
+|           |     |---- <season#>/<episode#>/
+|           |           |---- <language>.xml  (Base Episode Record)
+|           |
+|           |---- absolute/  (sorts using the absolute ordering method)
+|           |     |---- <absolute#>/
+|           |       |---- <language>.xml  (Base Episode Record)
+|
+|---- episodes
+|     |---- <episodeid>/  (will return en.xml by default)
+|           |---- <language>.xml  (Base Episode Record)
+|
+|---- (Updates)
+      |---- updates_<timeframe>.xml
+      |---- updates_<timeframe>.zip
+
+
+ Example Usage 
+
+Assume you have a database of TV episodes, each having a series name, season number, and episode number. This example will get all of the information for each series and keep it updated compared to the database. 
+
+
+Development Tasks 
+
+Step 1: Get an API key 
+
+Visit the API registration form and store your key somewhere in your code (denoted as <apikey> for rest of example). 
+
+
+Step 2: Get a list of languages 
+
+a. Retrieve <mirrorpath>/api/<apikey>/languages.xml. 
+
+b. Save this in your code and allow your users to select their language (denoted as <language> for rest of example). Note: You may also grab this dynamically when needed, but it'll rarely be changed. 
+
+
+Initial Database Processing 
+
+These steps are used to populate all of the initial series and episode data in your local database. 
+
+
+Step 1: Get a list of mirrors 
+
+a. Retrieve http://thetvdb.com/api/<apikey>/mirrors.xml. 
+
+b. Create 3 arrays called xmlmirrors, bannermirrors, and zipmirrors. 
+
+c. Separate the mirrors using the typemask field, as documented for mirrors.xml. 
+
+d. Select a random mirror from each array (denoted as <mirrorpath_xml>, <mirrorpath_banners>, and <mirrorpath_zip> for rest of example. 
+
+
+Step 2: Get the current server time 
+
+a. Retrieve http://thetvdb.com/api/Updates.php?type=none. 
+
+b. Store this value for later use (denoted as <previoustime> for rest of example). 
+
+
+Step 3: Loop through and look up each series id 
+
+a. Retrieve http://thetvdb.com/api/GetSeries.php?seriesname=<series name from your database> 
+
+b. Optionally present results to user so they can select the match they want. 
+
+c. Store this series id in a table in your database. 
+
+
+Step 4: Get base information for each series 
+
+a. Retrieve <mirrorpath_zip>/api/<apikey>/series/<seriesid>/all/<language>.zip and extract <language>.xml and banners.xml. 
+
+b. Process the XML data in <language>.xml and store all <Series> data. 
+
+c. Download each series banner in banners.xml and prompt the user to see which they want to keep. 
+
+Note: Make sure you record <id> from each series, since it's returned in updates as <Series>. 
+
+
+Step 5: Get base information for each episode 
+
+a. Use <language>.xml from step 3 to find and store the data associated with your episode. 
+
+b. Use <filename> from results in step 5a to download the episode image from <mirrorpath_banners>/banners/<filename>. 
+
+Note: Make sure you record <id> from each episode, since it's returned in updates as <Episode>. 
+
+
+Future Database Processing 
+
+These steps are used to keep your database current with the latest information. 
+
+
+Step 1: Get a list of mirrors 
+
+a. Retrieve http://thetvdb.com/api/<apikey>/mirrors.xml. 
+
+b. Create 3 arrays called xmlmirrors, bannermirrors, and zipmirrors. 
+
+c. Separate the mirrors using the typemask field, as documented for mirrors.xml. 
+
+d. Select a random mirror from each array (denoted as <mirrorpath_xml>, <mirrorpath_banners>, and <mirrorpath_zip> for rest of example. 
+
+
+Step 2: Get a list of all series and episode updates 
+
+a. Retrieve http://thetvdb.com/api/Updates.php?type=all&time=<previoustime>. 
+
+b. Process the returned XML and loop through each series (<seriesid>) and episode (<episodeid>) entry. 
+
+
+Step 3: Update each series in the update XML 
+
+a. Retrieve <mirrorpath_xml>/api/<apikey>/series/<seriesid>/<language>.xml. 
+
+b. Process XML data and use to replace information in local database. 
+
+
+Step 4: Update each episode in the update XML 
+
+a. Retrieve <mirrorpath_xml>/api/<apikey>/episodes/<episodeid>/<language>.xml. 
+
+b. Process XML data and use to replace information in local database. 
+
+
+Step 5: Record <previoustime> for next update 
+
+a. Using the XML from step 2, store <Time> as <previoustime> and use for your next call to Updates.php. 
+
+ Episode Image Notes 
+
+There is a value called EpImgFlag on each episode record which returns an unsigned integer. Below is a list of what each number means 
+
+1. 4:3 - Indicates an image is a proper 4:3 (1.31 to 1.35) aspect ratio. 
+
+2. 16:9 - Indicates an image is a proper 16:9 (1.739 to 1.818) aspect ratio. 
+
+3. Invalid Aspect Ratio - Indicates anything not in a 4:3 or 16:9 ratio. We don't bother listing any other non standard ratios. 
+
+4. Image too Small - Just means the image is smaller then 300x170. 
+
+5. Black Bars - Indicates there are black bars along one or all four sides of the image. 
+
+6. Improper Action Shot - Could mean a number of things, usually used when someone uploads a promotional picture that isn't actually from that episode but does refrence the episode, it could also mean it's a credit shot or that there is writting all over it. It's rarely used since most times an image would just be outright deleted if it falls in this category. 
+
+It can also return a null value, which just means it was uploaded before we started storing this information. If it's 1 or 2 the site assumes it's a proper image, anything above 2 is considered incorrect and can be replaced by anyone with an account. 

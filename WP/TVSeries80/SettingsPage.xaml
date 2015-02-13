@@ -1,0 +1,171 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="TVSeries80.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    toolkit:TiltEffect.IsTiltEnabled="True"
+    shell:SystemTray.IsVisible="True">
+
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:TurnstileTransition Mode="BackwardIn"/>
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:TurnstileTransition Mode="ForwardIn"/>
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:TurnstileTransition Mode="BackwardOut"/>
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:TurnstileTransition Mode="ForwardOut"/>
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent" >
+
+        <!-- LOCALIZATION NOTE:
+            To localize the displayed strings copy their values to appropriately named
+            keys in the app's neutral language resource file (AppResources.resx) then
+            replace the hard-coded text value between the attributes' quotation marks
+            with the binding clause whose path points to that string name.
+
+            For example:
+
+                Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}"
+
+            This binding points to the template's string resource named "ApplicationTitle".
+
+            Adding supported languages in the Project Properties tab will create a
+            new resx file per language that can carry the translated values of your
+            UI strings. The binding in these examples will cause the value of the
+            attributes to be drawn from the .resx file that matches the
+            CurrentUICulture of the app at run time.
+         -->
+
+        <phone:Pivot 
+            x:Name="PivotControl"
+            Title="SETTINGS">
+
+            <!-- news settings Pivot page -->
+            <phone:PivotItem Header="news">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Enable or disable RSS news feeds" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                    <Grid Grid.Row="1">
+                        <phone:LongListSelector x:Name="NewsList">
+                            <phone:LongListSelector.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding Enabled}" Click="OnNewsEnableClick" />
+                                        <TextBlock Text="{Binding NewsName}" VerticalAlignment="Center" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </phone:LongListSelector.ItemTemplate>
+                        </phone:LongListSelector>
+                    </Grid>
+                </Grid>
+            </phone:PivotItem>
+
+            <!-- search Pivot page -->
+            <phone:PivotItem Header="search">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Specify maximum number of search items returned by search options" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <RadioButton x:Name="Search50" Content="50" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnSearchLimitOptionsChecked"/>
+                        <RadioButton x:Name="Search100" Content="100" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnSearchLimitOptionsChecked"/>
+                        <RadioButton x:Name="Search200" Content="200" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnSearchLimitOptionsChecked"/>
+                        <RadioButton x:Name="Search500" Content="500" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnSearchLimitOptionsChecked"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="2" Text="Specify maximum number of search items returned by Twitter" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <RadioButton x:Name="TwitterSearch15" Content="15" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnTwitterSearchLimitOptionsChecked"/>
+                        <RadioButton x:Name="TwitterSearch30" Content="30" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnTwitterSearchLimitOptionsChecked"/>
+                        <RadioButton x:Name="TwitterSearch50" Content="50" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnTwitterSearchLimitOptionsChecked"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="4" Text="Specify Twitter search type (for tweets)" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                    <StackPanel Grid.Row="5" Orientation="Horizontal">
+                        <RadioButton x:Name="TwitterSearchTypeMixed" Content="Mixed" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnTwitterSearchTypeOptionsChecked"/>
+                        <RadioButton x:Name="TwitterSearchTypeRecent" Content="Recent" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnTwitterSearchTypeOptionsChecked"/>
+                        <RadioButton x:Name="TwitterSearchTypePopular" Content="Popular" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnTwitterSearchTypeOptionsChecked"/>
+                    </StackPanel>
+                </Grid>
+            </phone:PivotItem>
+
+            <!-- display Pivot page -->
+            <phone:PivotItem Header="display">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Choose how external web links are displayed" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <RadioButton x:Name="InternalRB" Content="Internal" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnBrowserOptionsChecked"/>
+                        <RadioButton x:Name="IERB" Content="IE" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnBrowserOptionsChecked"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="2" Text="Preferred web site style (internal only, if supported)" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <RadioButton x:Name="iMobile" Content="Mobile" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnWebsiteStyleChecked"/>
+                        <RadioButton x:Name="iDesktop" Content="Desktop" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnWebsiteStyleChecked"/>
+                    </StackPanel>
+                </Grid>
+            </phone:PivotItem>
+
+            <!-- youtube Pivot page -->
+            <phone:PivotItem Header="youtube">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="YouTube streaming quality" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <RadioButton x:Name="s480p" Content="480p" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnYouTubeStreamOptionsChecked"/>
+                        <RadioButton x:Name="s720p" Content="720p" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnYouTubeStreamOptionsChecked"/>
+                        <RadioButton x:Name="s1080p" Content="1080p" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnYouTubeStreamOptionsChecked"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="2" Text="YouTube download quality" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <RadioButton x:Name="d480p" Content="480p" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnYouTubeDLOptionsChecked"/>
+                        <RadioButton x:Name="d720p" Content="720p" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnYouTubeDLOptionsChecked"/>
+                        <RadioButton x:Name="d1080p" Content="1080p" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="OnYouTubeDLOptionsChecked"/>
+                    </StackPanel>
+                </Grid>
+            </phone:PivotItem>
+
+        </phone:Pivot>
+
+    </Grid>
+
+</phone:PhoneApplicationPage>

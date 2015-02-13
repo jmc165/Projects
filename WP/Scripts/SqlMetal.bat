@@ -1,0 +1,2 @@
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\SqlMetal.exe" c:\TFSProjects\WP\CreateDatabase\bin\Debug\NewsPrint.sdf /code:c:\TFSProjects\WP\NewsPrint80\Models\NewsPrintDataContext.cs /language:csharp /namespace:NewsPrint80 /Context:NewsPrintDataContext /provider:SQLCompact /pluralize
+pause

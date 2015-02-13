@@ -1,0 +1,520 @@
+﻿
+
+private void OnEpisodeLinkSelectionChanged(object sender, SelectionChangedEventArgs e)
+{
+    LongListSelector list = sender as LongListSelector;
+    if (list != null)
+    {
+        Link link = list.SelectedItem as Link;
+        if (link != null)
+        {
+            try
+            {
+
+                MediaPlayerLauncher player = new MediaPlayerLauncher();
+                player.Media = new Uri(link.FileURI, UriKind.Absolute);
+                player.Controls = MediaPlaybackControls.All;
+                player.Location = MediaLocationType.Data;
+                player.Show();
+            }
+            catch
+            {
+                MessageBox.Show("This file cannot be played on Windows Phone");
+            }
+        }
+        list.SelectedItem = null;
+    }
+}
+
+private void OnViewLinksClick(object sender, RoutedEventArgs e)
+{
+    if (mEpisode != null)
+    {
+        NavigationService.Navigate(new Uri(String.Format("/DisplayEpisodeLinksPage.xaml?EpisodeID={0}", mEpisode.id), UriKind.Relative));
+    }
+}
+
+private void OnEpisodeLinkSelectionChanged(object sender, SelectionChangedEventArgs e)
+{
+    LongListSelector list = sender as LongListSelector;
+    if (list != null)
+    {
+        Link link = list.SelectedItem as Link;
+        if (link != null)
+        {
+            try
+            {
+
+                MediaPlayerLauncher player = new MediaPlayerLauncher();
+                player.Media = new Uri(link.FileURI, UriKind.Absolute);
+                player.Controls = MediaPlaybackControls.All;
+                player.Location = MediaLocationType.Data;
+                player.Show();
+            }
+            catch
+            {
+                MessageBox.Show("This file cannot be played on Windows Phone");
+            }
+        }
+        list.SelectedItem = null;
+    }
+}
+
+private void OnLoadEpisodePageCompleted(object sender, HtmlDocumentLoadCompleted e)
+{
+    CustomHtmlWeb web = sender as CustomHtmlWeb;
+    if (e.Document != null)
+    {
+        ParseEpisodePage(e.Document);
+    }
+    else if (e.Error != null)
+    {
+        System.Diagnostics.Debug.WriteLine("URI Error: " + web.GetURI);
+    }
+}
+
+private void ParseEpisodePage(HtmlDocument doc)
+{
+    string URI = null;
+    string title = null;
+    string percent = null;
+
+    foreach (var node in doc.DocumentNode.Descendants())
+    {
+        switch (node.Name)
+        {
+            case "a":
+                if (node.Attributes["href"] != null)        // its a link ('a' href attribute)
+                {
+                    URI = node.Attributes["href"].Value;
+                }
+                if (node.Attributes["title"] != null)        // its a link ('a' href attribute)
+                {
+                    title = node.Attributes["title"].Value;
+                }
+                if (node.InnerText.Contains("Watch This Link"))
+                {
+                }
+                break;
+            case "span":
+                if (node.Attributes["class"] != null)        // its a link ('a' href attribute)
+                {
+                    if (node.Attributes["class"].Value == "percent")
+                    {
+                        percent = node.InnerText;
+                        Match match = Regex.Match(percent, @"([0-9]+%)", RegexOptions.IgnoreCase);
+                        if (match.Success)
+                        {
+                            percent = match.Groups[1].Value.Replace("%", "");
+                        }
+                        if (URI != null && title != null)
+                        {
+                            Link link = new Link();
+                            link.Name = title;
+                            link.Percentage = percent;
+                            CustomHtmlWeb webClient = new CustomHtmlWeb(link, App.URI_WATCH_SERIES + URI);
+                            webClient.LoadAsync(App.URI_WATCH_SERIES + URI);
+                            webClient.LoadCompleted += OnLoadLinkPageCompleted;
+                        }
+                    }
+                }
+                break;
+        }
+    }
+}
+
+private void OnLoadLinkPageCompleted(object sender, HtmlDocumentLoadCompleted e)
+{
+    CustomHtmlWeb web = sender as CustomHtmlWeb;
+    if (e.Document != null)
+    {
+        ParseLinkPage(web, e.Document);
+    }
+    else if (e.Error != null)
+    {
+        System.Diagnostics.Debug.WriteLine("URI Error: " + web.GetURI);
+    }
+}
+
+private void ParseLinkPage(CustomHtmlWeb w, HtmlDocument doc)
+{
+    string URI = null;
+
+    foreach (var node in doc.DocumentNode.Descendants())
+    {
+        switch (node.Name)
+        {
+            case "a":
+                if (node.Attributes["href"] != null)        // its a link ('a' href attribute)
+                {
+                    URI = node.Attributes["href"].Value;
+                }
+                if (node.InnerText.Contains("Click Here to Play"))
+                {
+                    // sub-parse
+                    URI = RedirectURI(URI);
+                    if (URI != null && URI.Contains("."))
+                    {
+                        CustomHtmlWeb webClient = new CustomHtmlWeb(w.GetLink, URI);
+                        webClient.LoadAsync(URI);
+                        webClient.LoadCompleted += OnLoadSubLinkPageCompleted;
+                    }
+                }
+                break;
+        }
+    }
+}
+
+private string RedirectURI(string URI)
+{
+    Match match = Regex.Match(URI, @"://([A-Za-z0-9\.]+)/", RegexOptions.IgnoreCase);
+    if (match.Success)
+    {
+        string site = match.Groups[1].Value;
+        switch (site)
+        {
+            // cannot process certain sites (iLivid)
+            case "www.putlocker.com":
+            case "www.videoweed.es":
+            case "www.novamov.com":
+            case "www.divxstage.eu":
+            case "movreel.com":
+            case "filenuke.com":
+            case "flashx.tv":
+            case "videobug.net":
+            case "www.youtube.com":
+            case "www.dailymotion.com":
+            case "www.yeoh.com":
+            case "www.nowvideo.co":
+                    System.Diagnostics.Debug.WriteLine("Rejecting uri " + URI);
+                    return null;
+            case "gorillavid.com":
+                URI = URI.Replace("gorillavid.com", "gorillavid.in");
+                break;
+            case "movpod.net":
+                URI = URI.Replace("movpod.net", "movpod.in");
+                break;
+            case "daclips.com":
+                URI = URI.Replace("daclips.com", "daclips.in");
+                break;
+                default:
+                break;
+        }
+    }
+    return URI;
+}
+
+private void OnLoadSubLinkPageCompleted(object sender, HtmlDocumentLoadCompleted e)
+{
+    CustomHtmlWeb web = sender as CustomHtmlWeb;
+    if (e.Document != null)
+    {
+        ParseSubLinkPage(web, e.Document);
+    }
+    else if (e.Error != null)
+    {
+        System.Diagnostics.Debug.WriteLine("URI Error: " + web.GetURI);
+    }
+}
+
+private void ParseSubLinkPage(CustomHtmlWeb w, HtmlDocument doc)
+{
+    string uri = w.GetURI;
+    if (uri.Contains("stagevu"))
+        GetFileMethod2(w, doc);
+    else if (uri.Contains("video44.net"))
+        GetFileMethod3(w, doc);
+    else if (uri.Contains("gorillavid"))
+        RequestFileMethod1(w, doc);
+    else if (uri.Contains("movpod"))
+        RequestFileMethod1(w, doc);
+    else if (uri.Contains("daclips"))
+        RequestFileMethod1(w, doc);
+    else if (uri.Contains("allmyvideos"))
+        RequestFileMethod1(w, doc);
+    else
+        System.Diagnostics.Debug.WriteLine("Unrecognised request for uri " + uri);
+}
+
+private void PostRequest(CustomHtmlWeb w, string uri, string postData)
+{
+    CustomWebRequest request = new CustomWebRequest(w, uri, postData);
+    request.Request.Method = "POST";
+    request.Request.ContentType = "application/x-www-form-urlencoded";
+    request.Request.BeginGetRequestStream(new AsyncCallback(GetRequestStreamCallback), request);
+}
+
+private void GetRequestStreamCallback(IAsyncResult callbackResult)
+{
+    CustomWebRequest request = (CustomWebRequest)callbackResult.AsyncState;
+    // End the stream request operation
+    Stream postStream = request.Request.EndGetRequestStream(callbackResult);
+
+    // Create the post d
+    byte[] byteArray = Encoding.UTF8.GetBytes(request.PostData);
+
+    // Add the post data to the web request
+    postStream.Write(byteArray, 0, byteArray.Length);
+    postStream.Close();
+
+    // Start the web request
+    request.Request.BeginGetResponse(new AsyncCallback(GetResponseStreamCallback), request);
+}
+
+private void GetResponseStreamCallback(IAsyncResult callbackResult)
+{
+    CustomWebRequest request = (CustomWebRequest)callbackResult.AsyncState;
+    HttpWebResponse response = (HttpWebResponse)request.Request.EndGetResponse(callbackResult);
+    using (StreamReader httpWebStreamReader = new StreamReader(response.GetResponseStream()))
+    {
+        string result = httpWebStreamReader.ReadToEnd();
+        string uri = request.CustomWeb.GetURI;
+        Link link = request.CustomWeb.GetLink;
+        if (uri.Contains("gorillavid"))
+            GetFileMethod1(request, result);
+        else if (uri.Contains("movpod"))
+            GetFileMethod1(request, result);
+        else if (uri.Contains("daclips"))
+            GetFileMethod1(request, result);
+        else if (uri.Contains("allmyvideos"))
+            GetFileMethod1(request, result);
+        else
+            System.Diagnostics.Debug.WriteLine("Unrecognised response for uri " + uri);
+    }
+}
+
+public void RequestFileMethod1(CustomHtmlWeb w, HtmlDocument doc)
+{
+#if DEBUG
+    StringBuilder sb = new StringBuilder();
+    StringWriter sw = new StringWriter(sb);
+    doc.Save(sw);
+    string s = sb.ToString();
+#endif
+    string uri = w.GetURI;
+    string name = null;
+    string value = null;
+    string op = null;
+    string usrLogin = null;
+    string id = null;
+    string fname = null;
+    string referer = null;
+    string channel = null;
+    string methodFree = null;
+
+    foreach (var node in doc.DocumentNode.Descendants())
+    {
+        switch (node.Name)
+        {
+            case "input":
+                if (node.Attributes["name"] != null)        // its a link ('a' href attribute)
+                {
+                    name = node.Attributes["name"].Value;
+                }
+                if (node.Attributes["value"] != null)        // its a link ('a' href attribute)
+                {
+                    value = node.Attributes["value"].Value;
+                    switch (name)
+                    {
+                        case "op":
+                            op = value;
+                            break;
+                        case "usr_login":
+                            usrLogin = value;
+                            break;
+                        case "id":
+                            id = value;
+                            break;
+                        case "fname":
+                            fname = value;
+                            break;
+                        case "referer":
+                            referer = value;
+                            break;
+                        case "channel":
+                            channel = value;
+                            break;
+                        case "method_free":
+                            {
+                                methodFree = value;
+                                string postData;
+                                if (channel != null)
+                                    postData = String.Format("op={0}&usr_login={1}&id={2}&fname={3}&referer={4}&channel={5}&method_free={6}",
+                                        op, usrLogin, id, fname, referer, channel, methodFree);
+                                else
+                                    postData = String.Format("op={0}&usr_login={1}&id={2}&fname={3}&referer={4}&method_free={5}",
+                                        op, usrLogin, id, fname, referer, methodFree);
+                                PostRequest(w, uri, postData);
+                            }
+                            return;
+                    }
+                }
+                break;
+        }
+    }
+}
+
+public void GetFileMethod1(CustomWebRequest request, string result)
+{
+    string file = null;
+    Link link = request.CustomWeb.GetLink;
+    using (StringReader reader = new StringReader(result))
+    {
+        string line;
+        while ((line = reader.ReadLine()) != null)
+        {
+            if (line.Contains("http"))
+            {
+                if (line.Contains("file:") && file == null)
+                {
+                    Match match = Regex.Match(line, "\"(.*?)\"", RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        if (match.Groups[1].Value != null)
+                        {
+                            file = match.Groups[1].Value;
+                            link.FileURI = file;
+                            DispatchInvoke(() =>
+                            {
+                                mLinkItems.Add(link);
+                                LinksHeader.Text = String.Format("{0} links found", mLinkItems.Count);
+                            }
+                            );
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    System.Diagnostics.Debug.WriteLine("Site {0} player URL not detected", link.Name);
+}
+
+public void GetFileMethod2(CustomHtmlWeb w, HtmlDocument doc)
+{
+#if DEBUG
+    StringBuilder sb = new StringBuilder();
+    StringWriter sw = new StringWriter(sb);
+    doc.Save(sw);
+    string s = sb.ToString();
+#endif
+    Link link = w.GetLink;
+    foreach (var node in doc.DocumentNode.Descendants())
+    {
+        switch (node.Name)
+        {
+            case "param":
+                if (node.Attributes["name"] != null)        // its a link ('a' href attribute)
+                {
+                    if (node.Attributes["name"].Value == "src")
+                    {
+                        if (node.Attributes["value"] != null)
+                        {
+                            string file = node.Attributes["value"].Value;
+                                if (file != null)
+                            {
+                                link.FileURI = file;
+                                DispatchInvoke(() =>
+                                {
+                                    mLinkItems.Add(link);
+                                    LinksHeader.Text = String.Format("{0} links found", mLinkItems.Count);
+                                }
+                                );
+                                return;
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+    System.Diagnostics.Debug.WriteLine("Site {0} player URL not detected", link.Name);
+}
+
+// no post for this 
+public void GetFileMethod3(CustomHtmlWeb w, HtmlDocument doc)
+{
+    string file = null;
+    StringBuilder sb = new StringBuilder();
+    StringWriter sw = new StringWriter(sb);
+    doc.Save(sw);
+    string result = sb.ToString();
+    Link link = w.GetLink;
+    using (StringReader reader = new StringReader(result))
+    {
+        string line;
+        while ((line = reader.ReadLine()) != null)
+        {
+            if (line.Contains("http"))
+            {
+                if (line.Contains("file:") && file == null)
+                {
+                    Match match = Regex.Match(line, "\"(.*?)\"", RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        if (match.Groups[1].Value != null)
+                        {
+                            file = match.Groups[1].Value;
+                            // file is the link
+                            if (file != null)
+                            {
+                                link.FileURI = file;
+                                DispatchInvoke(() =>
+                                {
+                                    mLinkItems.Add(link);
+                                    LinksHeader.Text = String.Format("{0} links found", mLinkItems.Count);
+                                }
+                                );
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    System.Diagnostics.Debug.WriteLine("Site {0} player URL not detected", link.Name);
+}
+
+// no post for this 
+public void GetFileMethod4(CustomHtmlWeb w, HtmlDocument doc)
+{
+    string file = null;
+    StringBuilder sb = new StringBuilder();
+    StringWriter sw = new StringWriter(sb);
+    doc.Save(sw);
+    string result = sb.ToString();
+    Link link = w.GetLink;
+    using (StringReader reader = new StringReader(result))
+    {
+        string line;
+        bool playlistFound = false;
+        while ((line = reader.ReadLine()) != null)
+        {
+            if (line.Contains("playlist:"))
+            {
+                playlistFound = true;
+            }
+            if (line.Contains("url:") && playlistFound && file == null)
+            {
+                Match match = Regex.Match(line, "\'(.*?)\'", RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    if (match.Groups[1].Value != null)
+                    {
+                        file = match.Groups[1].Value;
+                        link.FileURI = file;
+                        DispatchInvoke(() =>
+                        {
+                            mLinkItems.Add(link);
+                            LinksHeader.Text = String.Format("{0} links found", mLinkItems.Count);
+                        }
+                        );
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    System.Diagnostics.Debug.WriteLine("Site {0} player URL not detected", link.Name);
+}

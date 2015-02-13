@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsPrint80", "NewsPrint80\NewsPrint80.csproj", "{2A1E5BEE-347C-4B54-8B38-FE24102908C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateNewsPrintDatabase", "CreateDatabase\CreateNewsPrintDatabase.csproj", "{580BC27F-C7C7-4158-B410-E5BEEC072539}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{81708319-A00A-46B1-B5F4-78D88780561B}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\EnumIS.bat = Scripts\EnumIS.bat
+		Scripts\ListIS.bat = Scripts\ListIS.bat
+		Scripts\SqlMetal.bat = Scripts\SqlMetal.bat
+		Scripts\ToIS.bat = Scripts\ToIS.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{560AF29C-A819-42C9-8427-2C37CB59F448}"
+	ProjectSection(SolutionItems) = preProject
+		DesignNotes.txt = DesignNotes.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://jmchadbourne.visualstudio.com/defaultcollection
+		SccProjectUniqueName0 = NewsPrint80\\NewsPrint80.csproj
+		SccProjectName0 = NewsPrint80
+		SccLocalPath0 = NewsPrint80
+		SccProjectUniqueName1 = CreateDatabase\\CreateNewsPrintDatabase.csproj
+		SccProjectName1 = CreateDatabase
+		SccLocalPath1 = CreateDatabase
+		SccLocalPath2 = .
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|ARM.ActiveCfg = Debug|ARM
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|ARM.Build.0 = Debug|ARM
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|ARM.Deploy.0 = Debug|ARM
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|x86.ActiveCfg = Debug|x86
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|x86.Build.0 = Debug|x86
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Debug|x86.Deploy.0 = Debug|x86
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|ARM.ActiveCfg = Release|ARM
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|ARM.Build.0 = Release|ARM
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|ARM.Deploy.0 = Release|ARM
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|x86.ActiveCfg = Release|x86
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|x86.Build.0 = Release|x86
+		{2A1E5BEE-347C-4B54-8B38-FE24102908C7}.Release|x86.Deploy.0 = Release|x86
+		{580BC27F-C7C7-4158-B410-E5BEEC072539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{580BC27F-C7C7-4158-B410-E5BEEC072539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{580BC27F-C7C7-4158-B410-E5BEEC072539}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{580BC27F-C7C7-4158-B410-E5BEEC072539}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{580BC27F-C7C7-4158-B410-E5BEEC072539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{580BC27F-C7C7-4158-B410-E5BEEC072539}.Release|ARM.ActiveCfg = Release|Any CPU
+		{580BC27F-C7C7-4158-B410-E5BEEC072539}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

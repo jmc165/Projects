@@ -1,0 +1,32 @@
+﻿TV Series Guru offers a encyclopaedia of TV Series resources on your windows phone.
+
+Backed by its own version of the TheTVDB.COM database in the Azure Cloud, TV Series Guru gives access to
+information on tens of thousands of TV series and hundreds of thousands of individual episodes and actors.
+
+Modifications (v1.1.0.0)
+
+- Formatting of episode search results made consistent with other displays (Episode details before series)
+- Paid version removed. All features unlocked.
+- Misleading twitter search results message removed
+
+Features (v1.0.0.0):
+
+- Browse TV series alphabetically, by genre or year.
+- Search for series by name, episodes, actors, cast and crew.
+- Full text search on synopsis for series and episodes
+- Sort episodes by rating or air-date.
+- Cross reference actors between all the different TV series they have appeared in with a single touch.
+- One touch links to look for additional information on series, episodes and
+actors on IMDB, YouTube & Twitter.
+- Plays theme music for the series (where available).
+- Stream complete episodes or clips from YouTube, where available.
+- Download episodes and clips from YouTube to your phone for offline viewing 
+- Browse and search many TV related news feeds to find information about your favourite program or
+read current industry news and gossip.
+- Display slideshows of photos, posters and fan art related to your series.
+- Download photos, posters and fan art to your phone's photo folders for lock-screen images 
+- Bookmark favourite series using tiles.
+- History of recent viewed shows maintained automatically.
+
+TV Series Guru is an ideal way to discover new TV Series or watch episodes from your favourite series of years gone by.
+
